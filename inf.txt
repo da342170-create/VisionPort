@@ -1,0 +1,8 @@
+VisionPort is an image-detection project with a FastAPI backend and an optional Streamlit interface.
+
+You send an image to FastAPI using POST /detect or upload it in the API page at http://127.0.0.1:8000/docs.
+gateway.py receives the upload and passes the image to the detector.
+detector.py prepares the image and runs YOLOv8n using OpenVINO. It uses the project’s OpenVINO model and chooses an available device, such as GPU or CPU.
+FastAPI returns the detections as JSON: object names, confidence scores, and bounding-box coordinates.
+The optional Streamlit app in app.py displays the image with boxes drawn around detected objects. The API page shows JSON, not the marked image.
+You also added POST /trace, which returns details and timings for the image-processing stages.
