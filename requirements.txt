@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+streamlit
+openvino
+numpy
+Pillow
+opencv-python
+requests
+python-multipart
