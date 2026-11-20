@@ -6,3 +6,143 @@ detector.py prepares the image and runs YOLOv8n using OpenVINO. It uses the proj
 FastAPI returns the detections as JSON: object names, confidence scores, and bounding-box coordinates.
 The optional Streamlit app in app.py displays the image with boxes drawn around detected objects. The API page shows JSON, not the marked image.
 You also added POST /trace, which returns details and timings for the image-processing stages.
+..
+
+An annotation is information that describes something in an image so a computer can learn to recognize it. For example, it can say “there is a car here” and mark the car’s location with a box.
+
+In your dataset, instances_default.json contains those labels and box coordinates for the sample images.
+..
+audit_dataset.py: “audit” means check, and “dataset” means your collection of pictures and labels. This file checks that collection for problems.
+audit_report.md: the written record of what the check found.
+audit_charts.png: a picture of graphs made from the check’s results.
+
+An annotation is a label that tells the computer what object is in a picture and where it is.
+
+For example, an annotation might say: “There is a car in this picture; it is inside this rectangle.” Your annotations are stored in instances_default.json.
+
+So audit_dataset.py checks both the pictures and their annotations—for example, whether each label refers to an existing picture and whether its rectangle fits inside the picture.
+
+------
+2. Weights – The learned knowledge
+
+Weights are numerical values learned by the AI during training.
+
+For example, the model learns which visual patterns help it identify a football.
+
+Think of weights as the knowledge a student gains by studying.
+
+3. Checkpoint (.pt) – Saved model
+
+A checkpoint is a file that stores learned weights and usually the architecture and other information.
+
+In your VisionPort project:
+
+yolov8n.pt
+
+This is the file you already have.
+
+4. ONNX graph (.onnx) – Portable model
+
+ONNX stands for Open Neural Network Exchange.
+
+It stores the model as a graph of operations and weights.
+
+It helps different AI frameworks and tools work with the model.
+
+Think of it as converting a document into a format that different software can understand.
+
+5. TensorRT Engine (.engine / .plan) – Optimised model
+
+TensorRT converts the ONNX graph into an optimised engine for a particular NVIDIA GPU.
+
+Its purpose is faster inference (making predictions).
+
+Think of it as tuning a car engine for better performance.
+
+Remember this difference:
+- Architecture = Structure
+- Weights = Knowledge
+- Checkpoint = Saved model
+- ONNX = Portable graph
+- TensorRT = GPU-optimised engine
+-----
+1. Five important concepts
+Term	Simple meaning
+Architecture	Structure of the AI model
+Weights	Learned numerical values
+Checkpoint (.pt)	Saved model
+ONNX (.onnx)	Portable model graph
+TensorRT (.engine)	Optimised model for NVIDIA GPU
+
+2. Model lifecycle
+Training (PyTorch)
+
+Checkpoint (.pt)
+
+ONNX (.onnx)
+
+TensorRT (.engine / .plan)
+
+Serving (Triton)
+
+
+3. Important differences
+- last.pt – Latest training checkpoint; used to resume training.
+- best.pt – Best validation result.
+- yolov8n.pt – Inference checkpoint used in VisionPort.
+- .onnx – Portable model format.
+- .engine – GPU-specific optimised model.
+4. Precision
+Precision determines how much memory each number uses.
+Type	Bits	Memory per number
+FP32	32	4 bytes
+FP16	16	2 bytes
+INT8	8	1 byte
+INT4	4	0.5 bytes
+
+Lower precision generally requires less memory.
+5. Important YOLOv8n facts
+Remember these numbers
+Property	Value
+File size	6.5 MB
+Layers	23
+Parameters	3,157,200
+Classes	80
+Stored precision	FP16
+Architecture	DetectionModel
+
+6. Practical session
+You create inspect_artefacts.py to inspect model files.
+Part	Purpose
+1	Imports and options
+2	File inventory
+3	Inspect checkpoint
+4	Inspect ONNX
+5	Check TensorRT engine
+6	Compare artefacts
+
+Important commands:
+pip install onnx
+python inspect_artefacts.py
+python inspect_artefacts.py --export-onnx
+
+
+7. Important points to remember
+1. Different artefacts have different purposes.
+2. PyTorch reads .pt files.
+3. ONNX is a portable model format.
+4. TensorRT optimises models for NVIDIA GPUs.
+5. An engine cannot simply be renamed from an ONNX file.
+6. TensorRT engines are hardware-specific.
+7. Keep the original checkpoint because you cannot train from the engine.
+8. Building a TensorRT engine requires a suitable NVIDIA GPU and TensorRT.
+
+8. Five questions to revise before your exam
+1. What is model architecture?
+2. What is the difference between weights and checkpoint?
+3. Explain the model artefact lifecycle.
+4. What is the difference between FP32, FP16 and INT8?
+5. Why is a TensorRT engine hardware-specific?
+One-line revision:
+
+A trained model is saved as .pt, exported to .onnx, optimised into .engine, and served using Triton.
